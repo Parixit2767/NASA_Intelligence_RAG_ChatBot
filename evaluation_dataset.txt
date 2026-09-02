@@ -1,0 +1,43 @@
+# NASA Mission Intelligence RAG System - Evaluation Dataset
+# This file contains test questions for evaluating the RAG system's performance
+# Each question is designed to test different aspects of the system
+
+## Apollo 11 Mission (Moon Landing - July 1969)
+1. When did Apollo 11 land on the moon and who were the crew members?
+   Expected Response: Apollo 11 landed on July 20, 1969. The crew included Neil Armstrong (Commander), Buzz Aldrin (Lunar Module Pilot), and Michael Collins (Command Module Pilot).
+
+2. What was the primary objective of the Apollo 11 mission?
+   Expected Response: The primary objective was to land humans on the lunar surface and return them safely to Earth, fulfilling President Kennedy's goal of landing on the moon before the end of the 1960s.
+
+3. Describe the timeline of major events during the Apollo 11 mission.
+   Expected Response: The mission included launch, trans-lunar injection, lunar orbit insertion, lunar landing in the Sea of Tranquility, lunar surface activities, and return to Earth.
+
+## Apollo 13 Mission (Emergency and Recovery - April 1970)
+4. What was the critical problem that occurred during the Apollo 13 mission?
+   Expected Response: An oxygen tank explosion in the Service Module crippled the spacecraft, forcing NASA to abort the lunar landing and focus on safely returning the crew to Earth.
+
+5. How did the crew of Apollo 13 survive after the oxygen tank explosion?
+   Expected Response: The crew used the Lunar Module as a lifeboat, which had sufficient oxygen, water, and power. They navigated back to Earth using the moon's gravity for a trajectory correction.
+
+6. When did Apollo 13 launch and what were the mission parameters before the accident?
+   Expected Response: Apollo 13 launched on April 11, 1970, with the objective to land on the lunar surface at the Fra Mauro region, with astronauts Jim Lovell, Fred Haise, and Jack Swigert.
+
+## Challenger Disaster (January 1986)
+7. When did the Challenger space shuttle disaster occur and what were the immediate causes?
+   Expected Response: The Space Shuttle Challenger disintegrated on January 28, 1986, 73 seconds after launch. The immediate cause was the failure of an O-ring seal in the right solid rocket booster, allowing hot gases to escape.
+
+8. Who were the seven crew members of the Challenger mission STS-51-L?
+   Expected Response: The crew included Commander Dick Scobee, Pilot Michael Smith, Mission Specialists Judith Resnik, Ellison Onizuka, Ronald McNair, Payload Specialists Gregory Jarvis, and Teacher-in-Space Christa McAuliffe.
+
+9. What was the intended purpose of the Challenger mission on January 28, 1986?
+   Expected Response: The mission was scheduled to deploy the Tracking and Data Relay Satellite (TDRS)-B and conduct the Teacher in Space program with high school teacher Christa McAuliffe conducting lessons from orbit.
+
+## Technical and Operational Questions
+10. Describe the main communication protocols used during Apollo 11 mission operations.
+    Expected Response: Apollo 11 used voice communications via tracking stations, telemetry data transmission, and Houston Mission Control coordinated all spacecraft activities and emergencies.
+
+11. What were the key differences between the Apollo spacecraft configuration and the Space Shuttle design philosophy?
+    Expected Response: Apollo used expendable hardware with a command-service-lunar module configuration, while Shuttle was designed as a reusable orbital vehicle with different safety and operational characteristics.
+
+12. How did mission controllers respond to the Apollo 13 crisis in real-time?
+    Expected Response: Mission Control developed procedures to use the Lunar Module as a lifeboat, calculated trajectory corrections, and managed power, oxygen, and consumables to ensure crew survival.
