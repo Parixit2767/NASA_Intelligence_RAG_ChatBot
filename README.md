@@ -57,9 +57,9 @@ By completing this project, students will learn to:
 python -W ignore -c "import ragas; print('RAGAS:', ragas.__version__)"
 ```
 
-RAGAS `0.4.3` imports `ChatVertexAI` and `VertexAI` from the older `langchain-community` package paths.
+RAGAS `0.4.3` still carries legacy imports for `ChatVertexAI` and `VertexAI` in its vendored code.
 
-With newer LangChain versions, these integrations are provided by `langchain-google-vertexai`, causing:
+This project avoids the discontinued `langchain-community` package directly, and instead uses the supported `langchain-google-vertexai` package. If `ragas` tries to import the older path, patch it as shown below:
 
 ```text
 ImportError: cannot import name 'ChatVertexAI'

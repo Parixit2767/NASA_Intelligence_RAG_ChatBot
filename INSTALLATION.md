@@ -2,35 +2,53 @@
 
 ## ⚠️ Windows Installation Notes
 
-If you encounter `Microsoft Visual C++ 14.0 or greater is required` error, use one of these solutions:
+This project has a few known Windows-specific issues. The proven working path is:
 
-### Option 1: Install Visual C++ Build Tools (Recommended)
-1. Download from: https://visualstudio.microsoft.com/visual-cpp-build-tools/
-2. Run installer and select "Desktop development with C++"
-3. Restart and retry: `pip install -r requirements.txt`
+1. Use Python 3.11+
+2. Create a fresh virtual environment
+3. Install the core packages first
+4. Install `ragas==0.4.3` after the LangChain stack
+5. Apply the compatibility patch for newer LangChain imports
+6. Build the ChromaDB vector index before starting the app
 
-### Option 2: Use Pre-built Wheels (Faster)
-```bash
-# Install core dependencies first
-pip install openai==2.31.0 chromadb==1.5.7 pandas==2.3.3 streamlit==1.56.0
+### Option 1: Safe Windows Setup (Recommended)
+```powershell
+cd "C:\Users\YourUser\UDACITY_Projects\NASA_Intelligence_RAG_ChatBot"
 
-# Install LangChain dependencies
-pip install langchain-openai==1.1.13 langchain-community==0.4.2
+python -m venv .venv
+. .\.venv\Scripts\Activate.ps1
 
-# Install RAGAS with specific version
-pip install ragas==0.4.3 --no-build-isolation
-
-# Install remaining dependencies
-pip install chromadb==1.5.7
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install openai==2.31.0 chromadb==1.5.7 pandas==2.3.3 streamlit==1.56.0
+python -m pip install langchain-openai==1.1.13 langchain-google-vertexai==3.2.3
+python -m pip install ragas==0.4.3 --no-build-isolation
 ```
 
-### Option 3: Use Conda (Easiest for Windows)
+### If you hit the `scikit-network` build error
+This happens when `ragas==0.4.3` is installed in a broken or incomplete environment and the C++ toolchain is missing.
+
+Install Visual C++ Build Tools:
+1. Download from: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+2. Select "Desktop development with C++"
+3. Restart PowerShell and retry the install commands above
+
+### Option 2: Use Conda (Works well on Windows)
 ```bash
 conda create -n nasa-rag python=3.11
 conda activate nasa-rag
 conda install -c conda-forge chromadb pandas streamlit openai
-pip install ragas==0.4.3 langchain-openai==1.1.13 langchain-google-vertexai==3.2.3
+pip install langchain-openai==1.1.13 langchain-google-vertexai==3.2.3
+pip install ragas==0.4.3 --no-build-isolation
 ```
+
+### Option 3: Install from requirements file
+Use this only after the environment is already valid:
+```powershell
+. .\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+> Important: `pip install requirements` is incorrect. The correct command is `pip install -r requirements.txt`.
 
 ---
 
@@ -42,7 +60,6 @@ pip install ragas==0.4.3 langchain-openai==1.1.13 langchain-google-vertexai==3.2
 | chromadb | 1.5.7 | Vector database |
 | langchain-openai | 1.1.13 | LangChain OpenAI integration |
 | langchain-google-vertexai | 3.2.3 | Vertex AI support |
-| langchain-community | 0.4.2 | LangChain community tools |
 | ragas | 0.4.3 | RAG evaluation framework |
 | pandas | 2.3.3 | Data manipulation |
 | streamlit | 1.56.0 | Web UI framework |
@@ -62,24 +79,52 @@ Or permanently (add to System Environment Variables):
 3. New → Variable name: `OPENAI_API_KEY`
 4. Variable value: `your-key-here`
 
-### Step 2: Install Using Option 2 (Recommended for Windows)
-```bash
-cd NASA_Intelligence_RAG_ChatBot
-pip install openai==2.31.0 chromadb==1.5.7 pandas==2.3.3 streamlit==1.56.0
-pip install langchain-openai==1.1.13 langchain-community==0.4.2
-pip install ragas==0.4.3 --no-build-isolation
+### Step 2: Create a fresh virtual environment
+```powershell
+cd "C:\Users\YourUser\UDACITY_Projects\NASA_Intelligence_RAG_ChatBot"
+python -m venv .venv
+. .\.venv\Scripts\Activate.ps1
 ```
 
-### Step 3: Verify Installation
-```bash
+### Step 3: Install dependencies in the safe order
+```powershell
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install openai==2.31.0 chromadb==1.5.7 pandas==2.3.3 streamlit==1.56.0
+python -m pip install langchain-openai==1.1.13 langchain-google-vertexai==3.2.3
+python -m pip install ragas==0.4.3 --no-build-isolation
+```
+
+### Step 4: Apply the legacy RAGAS compatibility fix only where needed
+This project avoids the discontinued `langchain-community` package. Nonetheless, the installed `ragas==0.4.3` package still includes legacy import paths, so patch the vendored file in the environment:
+
+```powershell
+python -c "from pathlib import Path; p = Path('.venv') / 'Lib' / 'site-packages' / 'ragas' / 'llms' / 'base.py'; print(p)"
+```
+
+Then update the imports from:
+```python
+from langchain_community.chat_models.vertexai import ChatVertexAI
+from langchain_community.llms import VertexAI
+```
+
+to:
+```python
+from langchain_google_vertexai import ChatVertexAI
+from langchain_google_vertexai import VertexAI
+```
+
+### Step 5: Verify Installation
+```powershell
 python -c "from openai import OpenAI; print('✓ OpenAI OK')"
 python -c "import chromadb; print('✓ ChromaDB OK')"
 python -c "from langchain_openai import ChatOpenAI; print('✓ LangChain OK')"
-python -c "from ragas import evaluate; print('✓ RAGAS OK')"
+python -c "import ragas; from ragas.llms import LangchainLLMWrapper; print('✓ RAGAS OK:', ragas.__version__)"
 ```
 
-### Step 4: Build Embeddings Database
-```bash
+### Step 6: Build Embeddings Database
+```powershell
+$env:OPENAI_API_KEY="your-api-key-here"
+
 python embedding_pipeline.py `
   --openai-key $env:OPENAI_API_KEY `
   --chroma-dir ./chroma_db_openai `
@@ -88,8 +133,8 @@ python embedding_pipeline.py `
   --data-path .
 ```
 
-### Step 5: Launch Streamlit App
-```bash
+### Step 7: Launch Streamlit App
+```powershell
 streamlit run chat.py
 ```
 
@@ -105,7 +150,28 @@ pip install --upgrade chromadb
 ```
 
 ### RAGAS Import Errors (VertexAI)
-See README.md - RAGAS 0.4.3 VertexAI Import Compatibility Fix
+```powershell
+. .\.venv\Scripts\Activate.ps1
+python -c "from langchain_google_vertexai import ChatVertexAI, VertexAI; print('Vertex AI imports OK')"
+python -c "import ragas; from ragas.llms import LangchainLLMWrapper; print('RAGAS OK:', ragas.__version__)"
+```
+
+If the import still fails, patch the installed file at:
+```powershell
+.venv\Lib\site-packages\ragas\llms\base.py
+```
+
+Replace the old imports:
+```python
+from langchain_community.chat_models.vertexai import ChatVertexAI
+from langchain_community.llms import VertexAI
+```
+
+with:
+```python
+from langchain_google_vertexai import ChatVertexAI
+from langchain_google_vertexai import VertexAI
+```
 
 ### OpenAI API Key Not Found
 ```powershell
@@ -173,11 +239,14 @@ python embedding_pipeline.py --openai-key $env:OPENAI_API_KEY --chroma-dir ./chr
 
 ## ✅ Installation Verification Checklist
 
-- [ ] Python 3.8+ installed
-- [ ] Virtual environment created (optional but recommended)
-- [ ] `pip install` completed successfully
+- [ ] Python 3.11+ installed
+- [ ] Fresh virtual environment created
+- [ ] Core dependencies installed in the safe order
+- [ ] `ragas` import works
+- [ ] VertexAI compatibility fix applied
 - [ ] OpenAI API key set as environment variable
-- [ ] Test imports pass
+- [ ] ChromaDB index can be built successfully
+- [ ] Streamlit app launches without import errors
 - [ ] Can access data_text directory with mission files
 - [ ] Ready to run embedding pipeline
 
